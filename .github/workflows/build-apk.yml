@@ -26,6 +26,17 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+      - name: Parchear duplicados Kotlin
+        working-directory: mobile
+        run: |
+          cat >> android/app/build.gradle <<'EOF'
+
+          // Sentinel: excluye kotlin-stdlib-jdk7/jdk8 obsoletos (duplican clases del stdlib moderno)
+          configurations.all {
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk7'
+              exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib-jdk8'
+          }
+          EOF
       - name: Compilar APK debug
         working-directory: mobile
         run: |
