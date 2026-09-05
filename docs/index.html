@@ -3,26 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b0e14">
+<meta name="theme-color" content="#1b2547">
 <title>Sentinel</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png">
-<style>html{background:#0b0e14}</style>
+<style>html{background:#eef1f6}</style>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="brand"><span class="dot" id="liveDot"></span><strong>SENTINEL</strong><span class="ver">13.3.0</span></div>
-  <div class="age" id="age">conectando…</div>
+<header class="hero-head">
+  <div class="head-row">
+    <div class="avatar">S</div>
+    <div class="head-titles"><strong>SENTINEL</strong><span>Monitor · v13.3.0</span></div>
+    <div class="livepill" id="livePill"><span class="dot" id="liveDot"></span><span id="age">conectando…</span></div>
+  </div>
+  <div class="hero-balance">
+    <div class="lbl-light">Balance</div>
+    <div class="big-light mono" id="cBalance">—</div>
+    <div class="sub-light mono" id="cPnl">—</div>
+  </div>
 </header>
-<div class="stale hidden" id="stale">Datos desactualizados — revisa conexión. Última lectura: <span id="staleAt">—</span></div>
+<div class="stale hidden" id="stale">Datos desactualizados. Última lectura: <span id="staleAt">—</span></div>
 
 <main id="view-estado" class="view active">
-  <section class="cards">
-    <div class="card hero"><div class="lbl">Balance</div><div class="big mono" id="cBalance">—</div><div class="sub mono" id="cPnl">—</div></div>
-    <div class="card"><div class="lbl">Abiertas</div><div class="big mono" id="cOpen">—</div><div class="sub" id="cPaused">—</div></div>
-    <div class="card"><div class="lbl">Sharpe</div><div class="big mono" id="cSharpe">—</div><div class="sub" id="cTrades">—</div></div>
-    <div class="card"><div class="lbl">Drawdown máx</div><div class="big mono" id="cDd">—</div><div class="sub" id="cDrift">—</div></div>
+  <section class="tiles">
+    <div class="tile"><div class="tile-ic">◉</div><div><div class="tile-v mono" id="cOpen">—</div><div class="tile-l">Abiertas</div></div></div>
+    <div class="tile"><div class="tile-ic">◎</div><div><div class="tile-v mono" id="cSharpe">—</div><div class="tile-l">Sharpe</div></div></div>
+    <div class="tile"><div class="tile-ic">▼</div><div><div class="tile-v mono" id="cDd">—</div><div class="tile-l">Drawdown</div></div></div>
+    <div class="tile"><div class="tile-ic">⬢</div><div><div class="tile-v mono" id="cPaused">—</div><div class="tile-l">Estado</div></div></div>
   </section>
   <section class="card">
     <div class="cardtitle">Posiciones abiertas</div>
@@ -32,6 +40,8 @@
     <div class="cardtitle">Últimos cierres</div>
     <div id="recentClosed" class="list"><div class="empty">Sin datos aún.</div></div>
   </section>
+  <div class="cTrades small dim" id="cTrades" style="text-align:center"></div>
+  <div class="small dim" id="cDrift" style="text-align:center"></div>
 </main>
 
 <main id="view-operaciones" class="view">
@@ -66,6 +76,10 @@
     <div id="priceList" class="list"><div class="empty">Sin datos aún.</div></div>
   </section>
   <section class="card">
+    <div class="cardtitle">Diagnóstico de conexión</div>
+    <div id="diagBox" class="kv"><div class="empty">Sin chequeos aún.</div></div>
+  </section>
+  <section class="card">
     <div class="cardtitle">Comandos Telegram (toca para copiar)</div>
     <div class="cmds">
       <button data-cmd="/status">/status</button>
@@ -81,7 +95,8 @@
 
 <nav class="tabbar">
   <button data-view="estado" class="active">Estado</button>
-  <button data-view="operaciones">Operaciones</button>
+  <button data-view="operaciones">Trades</button>
+  <button class="fab" id="fabRefresh" aria-label="Actualizar">⟳</button>
   <button data-view="cerebro">Cerebro</button>
   <button data-view="sistema">Sistema</button>
 </nav>
