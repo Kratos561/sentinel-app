@@ -1,5 +1,5 @@
 /* Sentinel PWA service worker v2: red primero para shell configurable, purga total de v1. */
-var CACHE = "sentinel-v2";
+var CACHE = "sentinel-v3";
 var PRECACHE = ["./", "index.html", "styles.css", "manifest.webmanifest"];
 var NETWORK_FIRST = ["./", "index.html", "app.js", "config.js", "sw.js"];
 function isShell(url) {
