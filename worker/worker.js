@@ -1,6 +1,11 @@
 // sentinel-api — Cloudflare Worker puente solo-lectura hacia InfluxDB.
 // SIN secretos en el codigo: INFLUX_* y READ_KEY llegan como Worker Secrets.
-const ALLOWED_ORIGIN = "https://kratos561.github.io";
+const ALLOWED_ORIGINS = [
+  "https://kratos561.github.io",
+  "http://localhost",
+  "https://localhost",
+  "capacitor://localhost"
+];
 
 const _rl = new Map();
 function rateOk(req) {
@@ -18,9 +23,12 @@ function safeEq(a, b) {
     for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
     return d === 0;
 }
-function cors() {
+function cors(req) {
+    let o = "";
+    try { o = req ? (req.headers.get("Origin") || "") : ""; } catch (e) {}
+    const allow = ALLOWED_ORIGINS.indexOf(o) >= 0 ? o : ALLOWED_ORIGINS[0];
     return {
-        "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+        "Access-Control-Allow-Origin": allow,
         "Vary": "Origin",
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Max-Age": "86400",
@@ -28,8 +36,8 @@ function cors() {
         "Cache-Control": "no-store"
     };
 }
-function json(obj, status) {
-    return new Response(JSON.stringify(obj), { status: status || 200, headers: cors() });
+function json(req, obj, status) {
+    return new Response(JSON.stringify(obj), { status: status || 200, headers: cors(req) });
 }
 function splitCSV(line) {
     const out = []; let cur = ""; let q = false;
@@ -94,16 +102,16 @@ async function buildSnapshot(env) {
 export default {
     async fetch(req, env) {
         const url = new URL(req.url);
-        if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors() });
+        if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: cors(req) });
         if (url.pathname === "/api/snapshot") {
-            if (!safeEq(url.searchParams.get("key"), env.READ_KEY)) return json({ ok: false, error: "forbidden" }, 403);
-            if (!rateOk(req)) return json({ ok: false, error: "rate" }, 429);
+            if (!safeEq(url.searchParams.get("key"), env.READ_KEY)) return json(req, { ok: false, error: "forbidden" }, 403);
+            if (!rateOk(req)) return json(req, { ok: false, error: "rate" }, 429);
             try {
                 const snap = await buildSnapshot(env);
-                return json({ ok: true, serverTime: new Date().toISOString(), data: snap });
-            } catch (e) { return json({ ok: false, error: "upstream" }, 502); }
+                return json(req, { ok: true, serverTime: new Date().toISOString(), data: snap });
+            } catch (e) { return json(req, { ok: false, error: "upstream" }, 502); }
         }
-        if (url.pathname === "/api/ping") return json({ ok: true, t: new Date().toISOString() });
-        return json({ error: "not found" }, 404);
+        if (url.pathname === "/api/ping") return json(req, { ok: true, t: new Date().toISOString() });
+        return json(req, { error: "not found" }, 404);
     }
 };

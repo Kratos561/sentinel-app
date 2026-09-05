@@ -164,6 +164,7 @@
         render(j.data); diag();
       })
       .catch(function () {
+        lastHttp = "red/CORS?";
         $("liveDot").className = "dot stale";
         if (lastOk) {
           $("stale").classList.remove("hidden");
