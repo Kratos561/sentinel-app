@@ -1,0 +1,6 @@
+{
+  "appId": "com.sentinel.monitor",
+  "appName": "Sentinel",
+  "webDir": "../docs",
+  "server": { "androidScheme": "https" }
+}

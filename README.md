@@ -1,10 +1,10 @@
 # Sentinel App — monitor móvil del bot Sentinel
 
-PWA instalable (GitHub Pages) + puente Cloudflare Worker hacia InfluxDB + build de APK por GitHub Actions.
+PWA instalable (GitHub Pages, carpeta `docs/`) + puente Cloudflare Worker hacia InfluxDB + build de APK por GitHub Actions.
 
 ## Piezas
 
-- `pwa/` — la app (HTML/CSS/JS sin dependencias, instalable, responsive).
+- `docs/` — la app (HTML/CSS/JS sin dependencias, instalable, responsive).
 - `worker/worker.js` — puente solo-lectura. **Sin secretos en el código**: `INFLUX_URL`, `INFLUX_ORG`, `INFLUX_BUCKET`, `INFLUX_TOKEN` y `READ_KEY` se configuran como Worker Secrets.
 - `mobile/` — envoltorio Capacitor (solo se usa en CI para compilar el APK).
 - `.github/workflows/build-apk.yml` — compila el APK debug en la nube con cada push a `main`.
